@@ -29,6 +29,8 @@ class RangeFilter():
         rospy.init_node("range_filter")
         rospy.loginfo("-I- range_filter started")
         self.rolling_pts = rospy.get_param('~rolling_pts',4)
+        self.m = rospy.get_param('~exponent', -1.31)
+        self.b = rospy.get_param('~coefficient', 266.0)
         self.prev = [0] * self.rolling_pts
     
         rospy.Subscriber("range", Int16, self.inputCallback)
@@ -43,8 +45,6 @@ class RangeFilter():
     def inputCallback(self, msg):
     #########################################################################
         rospy.loginfo("-D- range_filter inputCallback")
-        b = 266
-        m = -1.31
         cur_val = msg.data
     
         if cur_val < 900:
@@ -55,7 +55,7 @@ class RangeFilter():
             self.rolling_ave = p.mean()
             self.rolling_std = p.std()
         
-            rolling_meters = b * self.rolling_ave ** m
+            rolling_meters = self.b * self.rolling_ave ** self.m
         
             self.filtered_pub.publish( rolling_meters )
             self.std_pub.publish( self.rolling_std )
