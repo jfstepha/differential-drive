@@ -74,13 +74,13 @@ class DiffTf:
         rospy.loginfo("%s started" % self.nodename)
         
         # parameters
-        self.rate = rospy.get_param('rate',10.0)
-        self.timeout = rospy.get_param('timeout',1.0)
-        self.ticks_meter = float(rospy.get_param('ticks_meter'))
-        self.base_width = float(rospy.get_param('base_width'))
+        self.rate = rospy.get_param('~rate',10.0)
+        self.timeout = rospy.get_param('~timeout',1.0)
+        self.ticks_meter = float(rospy.get_param('~ticks_meter'))
+        self.base_width = float(rospy.get_param('~base_width'))
         
-        self.base_frame_id = rospy.get_param('base_frame_id','base_link')
-        self.odom_frame_id = rospy.get_param('odom_frame_id', 'odom')
+        self.base_frame_id = rospy.get_param('~base_frame_id','base_link')
+        self.odom_frame_id = rospy.get_param('~odom_frame_id', 'odom')
         
         self.t_delta = rospy.Duration(1.0/self.rate)
         self.t_next = rospy.Time.now() + self.t_delta
