@@ -71,13 +71,12 @@ class DiffTf:
     #############################################################################
         rospy.init_node("diff_tf")
         self.nodename = rospy.get_name()
-        rospy.loginfo("%s started" % self.nodename)
+        rospy.loginfo("-I- %s started" % self.nodename)
         
         # parameters
         self.rate = rospy.get_param('~rate',10.0)
-        self.timeout = rospy.get_param('~timeout',1.0)
-        self.ticks_meter = float(rospy.get_param('~ticks_meter'))
-        self.base_width = float(rospy.get_param('~base_width'))
+        self.ticks_meter = float(rospy.get_param('~ticks_meter', 50))
+        self.base_width = float(rospy.get_param('~base_width', 0.245))
         
         self.base_frame_id = rospy.get_param('~base_frame_id','base_link')
         self.odom_frame_id = rospy.get_param('~odom_frame_id', 'odom')
@@ -101,10 +100,14 @@ class DiffTf:
         rospy.loginfo("%s: got rate %0.1f " %(self.nodename, self.rate))
         
         # subscriptions
-        rospy.Subscriber("lwheel_scaled", Int16, self.lwheelCallback)
-        rospy.Subscriber("rwheel_scaled", Int16, self.rwheelCallback)
+        rospy.Subscriber("lwheel", Int16, self.lwheelCallback)
+        rospy.Subscriber("rwheel", Int16, self.rwheelCallback)
         self.odomPub = rospy.Publisher("odom", Odometry)
         self.odomBroadcaster = TransformBroadcaster()
+        
+    #############################################################################
+    def spin(self):
+    #############################################################################
         while not rospy.is_shutdown():
             self.update()
        
@@ -185,7 +188,8 @@ class DiffTf:
 #############################################################################
 if __name__ == '__main__':
     """ main """
-    diffTf = DiffTf();
+    diffTf = DiffTf()
+    diffTf.spin()
     
     
    
