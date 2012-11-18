@@ -75,7 +75,7 @@ class DiffTf:
         
         # parameters
         self.rate = rospy.get_param('~rate',10.0)
-        self.ticks_meter = float(rospy.get_param('~ticks_meter', 50))
+        self.ticks_meter = float(rospy.get_param('ticks_meter', 50))
         self.base_width = float(rospy.get_param('~base_width', 0.245))
         
         self.base_frame_id = rospy.get_param('~base_frame_id','base_link')
