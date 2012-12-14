@@ -46,5 +46,10 @@ if __name__ == '__main__':
     
     lscaled_pub = rospy.Publisher("lwheel_scaled", Int16)
     rscaled_pub = rospy.Publisher("rwheel_scaled", Int16) 
-     
+    
+    ### testing sleep CPU usage
+    r = rospy.Rate(50) 
+    while not rospy.is_shutdown:
+        r.sleep()
+        
     rospy.spin()

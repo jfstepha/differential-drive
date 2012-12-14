@@ -41,15 +41,27 @@ class PidVelocity():
         self.nodename = rospy.get_name()
         rospy.loginfo("%s started" % self.nodename)
         
+        ### initialize variables
+        self.target = 0
+        self.motor = 0
+        self.vel = 0
+        self.integral = 0
+        self.error = 0
+        self.derivative = 0
+        self.previous_error = 0
+        self.wheel_prev = 0
+        self.wheel_latest = 0
+        self.then = rospy.Time.now()
+        
         ### get parameters #### 
         self.Kp = rospy.get_param('~Kp',10)
         self.Ki = rospy.get_param('~Ki',10)
-        self.Kd = rospy.get_param('~Kd',10)
+        self.Kd = rospy.get_param('~Kd',0.001)
         self.out_min = rospy.get_param('~out_min',-255)
         self.out_max = rospy.get_param('~out_max',255)
         self.rate = rospy.get_param('~rate',20)
         self.rolling_pts = rospy.get_param('~rolling_pts',2)
-        self.timeout_ticks = rospy.get_param('~timeout_ticks',10)
+        self.timeout_ticks = rospy.get_param('~timeout_ticks',2)
         self.ticks_per_meter = rospy.get_param('ticks_meter', 20)
         self.vel_threshold = rospy.get_param('~vel_threshold', 0.001)
         self.prev_vel = [0.0] * self.rolling_pts
@@ -57,10 +69,10 @@ class PidVelocity():
         self.prev_pid_time = rospy.Time.now()
         rospy.loginfo("%s got Kp:%0.3f Ki:%0.3f Kd:%0.3f tpm:%0.3f" % (self.nodename, self.Kp, self.Ki, self.Kd, self.ticks_per_meter))
         
-        #### subscribers/publishsers 
+        #### subscribers/publishers 
         rospy.Subscriber("wheel", Int16, self.wheelCallback) 
         rospy.Subscriber("wheel_vtarget", Float32, self.targetCallback) 
-        self.pub_motor = rospy.Publisher('motor_cmd', Int16)
+        self.pub_motor = rospy.Publisher('motor_cmd',Float32) 
         self.pub_vel = rospy.Publisher('wheel_vel', Float32)
    
         
@@ -155,7 +167,7 @@ class PidVelocity():
         self.derivative = (self.error - self.previous_error) / pid_dt
         self.previous_error = self.error
     
-        self.motor = (self.Kp * self.error) + (self.Ki * self.integral) #  + (self.Kd * self.derivative)
+        self.motor = (self.Kp * self.error) + (self.Ki * self.integral) + (self.Kd * self.derivative)
     
         if self.motor > self.out_max:
             self.motor = self.out_max
