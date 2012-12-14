@@ -54,6 +54,7 @@ class TwistToMotors():
     #############################################################
     
         r = rospy.Rate(self.rate)
+        idle = rospy.Rate(10)
         then = rospy.Time.now()
         self.ticks_since_target = self.timeout_ticks
     
@@ -63,7 +64,7 @@ class TwistToMotors():
             while not rospy.is_shutdown() and self.ticks_since_target < self.timeout_ticks:
                 self.spinOnce()
                 r.sleep()
-            r.sleep
+            idle.sleep()
                 
     #############################################################
     def spinOnce(self):
