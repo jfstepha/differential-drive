@@ -22,7 +22,7 @@
 import rospy
 import roslib
 from std_msgs.msg import Float32
-from geometry_msgs.msg import Twist    
+from geometry_msgs.msg import Twist 
 
 #############################################################
 #############################################################

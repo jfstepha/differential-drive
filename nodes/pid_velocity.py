@@ -64,6 +64,8 @@ class PidVelocity():
         self.timeout_ticks = rospy.get_param('~timeout_ticks',2)
         self.ticks_per_meter = rospy.get_param('ticks_meter', 20)
         self.vel_threshold = rospy.get_param('~vel_threshold', 0.001)
+        self.wheel_min = rospy.get_param('wheel_min', -32768)
+        self.wheel_max = rospy.get_param('wheel_max', 32768)
         self.prev_vel = [0.0] * self.rolling_pts
         self.wheel_latest = 0.0
         self.prev_pid_time = rospy.Time.now()
