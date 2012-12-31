@@ -103,12 +103,22 @@ class MainWindow(QtGui.QMainWindow):
     #######################################################
         # rospy.loginfo("publishing twist from (%0.3f,%0.3f)" %(self.x,self.y))
         self.twist = Twist()
-        self.twist.linear.x = self.y * (x_max - x_min) + x_min
+        self.twist.linear.x = (1-self.y) * (x_max - x_min) + x_min
         self.twist.linear.y = 0
         self.twist.linear.z = 0
         self.twist.angular.x = 0
         self.twist.angular.y = 0
-        self.twist.angular.z = self.x * (r_max - r_min) + r_min
+        self.twist.angular.z = (1-self.x) * (r_max - r_min) + r_min
+        
+        if self.twist.linear.x > x_max:
+            self.twist.linear.x = x_max
+        if self.twist.linear.x < x_min:
+            self.twist.linear.x = x_min
+        if self.twist.angular.z > r_max:
+            self.twist.angular.z = r_max
+        if self.twist.angular.z < r_min:
+            self.twist.angular.z = r_min
+        
         self.pub_twist.publish( self.twist )
         
 ##########################################################################
@@ -123,10 +133,10 @@ def main():
     global r_min
     global r_max
     
-    x_min = rospy.get_param("~x_min", 1.50)
-    x_max = rospy.get_param("~x_max", -1.50)
-    r_min = rospy.get_param("~r_min", 10.0)
-    r_max = rospy.get_param("~r_max", -10.0)
+    x_min = rospy.get_param("~x_min", -0.20)
+    x_max = rospy.get_param("~x_max", 0.20)
+    r_min = rospy.get_param("~r_min", -1.0)
+    r_max = rospy.get_param("~r_max", 1.0)
     
     app = QtGui.QApplication(sys.argv)
     ex = MainWindow()

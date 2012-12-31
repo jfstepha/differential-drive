@@ -81,6 +81,11 @@ class DiffTf:
         self.base_frame_id = rospy.get_param('~base_frame_id','base_link') # the name of the base frame of the robot
         self.odom_frame_id = rospy.get_param('~odom_frame_id', 'odom') # the name of the odometry reference frame
         
+        self.encoder_min = rospy.get_param('encoder_min', -32768)
+        self.encoder_max = rospy.get_param('encoder_max', 32768)
+        self.encoder_low_wrap = rospy.get_param('wheel_low_wrap', (self.encoder_max - self.encoder_min) * 0.3 + self.encoder_min )
+        self.encoder_high_wrap = rospy.get_param('wheel_high_wrap', (self.encoder_max - self.encoder_min) * 0.7 + self.encoder_min )
+ 
         self.t_delta = rospy.Duration(1.0/self.rate)
         self.t_next = rospy.Time.now() + self.t_delta
         
@@ -89,6 +94,10 @@ class DiffTf:
         self.enc_right = None
         self.left = 0               # actual values coming back from robot
         self.right = 0
+        self.lmult = 0
+        self.rmult = 0
+        self.prev_lencoder = 0
+        self.prev_rencoder = 0
         self.x = 0                  # position in xy plane 
         self.y = 0
         self.th = 0
@@ -182,12 +191,28 @@ class DiffTf:
     #############################################################################
     def lwheelCallback(self, msg):
     #############################################################################
-        self.left = msg.data
+        enc = msg.data
+        if (enc < self.encoder_low_wrap and self.prev_lencoder > self.encoder_high_wrap):
+            self.lmult = self.lmult + 1
+            
+        if (enc > self.encoder_high_wrap and self.prev_lencoder < self.encoder_low_wrap):
+            self.lmult = self.lmult - 1
+            
+        self.left = 1.0 * (enc + self.lmult * (self.encoder_max - self.encoder_min)) 
+        self.prev_lencoder = enc
         
     #############################################################################
     def rwheelCallback(self, msg):
     #############################################################################
-        self.right = msg.data
+        enc = msg.data
+        if(enc < self.encoder_low_wrap and self.prev_rencoder > self.encoder_high_wrap):
+            self.rmult = self.rmult + 1
+        
+        if(enc > self.encoder_high_wrap and self.prev_rencoder < self.encoder_low_wrap):
+            self.rmult = self.rmult - 1
+            
+        self.right = 1.0 * (enc + self.rmult * (self.encoder_max - self.encoder_min))
+        self.prev_rencoder = enc
 
 #############################################################################
 #############################################################################
