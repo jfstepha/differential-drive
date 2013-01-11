@@ -53,7 +53,7 @@ diff_controller.py - controller for a differential drive
 
 import rospy
 import roslib
-roslib.load_manifest('knex_ros')
+roslib.load_manifest('differential_drive')
 from math import sin, cos, pi
 
 from geometry_msgs.msg import Quaternion
