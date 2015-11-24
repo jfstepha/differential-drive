@@ -26,15 +26,7 @@ import roslib
 
 from std_msgs.msg import Int16
 
-def lwheelCallback(msg):
-    lscaled_pub.publish( msg.data * -1 * scale)
-    
-def rwheelCallback(msg):
-    rscaled_pub.publish( msg.data * -1 * scale)
-    
-
-if __name__ == '__main__':
-    """main"""
+def scaleWheel():
     rospy.init_node("wheel_scaler")
     rospy.loginfo("wheel_scaler started")
     
@@ -44,8 +36,8 @@ if __name__ == '__main__':
     rospy.Subscriber("lwheel", Int16, lwheelCallback)
     rospy.Subscriber("rwheel", Int16, rwheelCallback)
     
-    lscaled_pub = rospy.Publisher("lwheel_scaled", Int16)
-    rscaled_pub = rospy.Publisher("rwheel_scaled", Int16) 
+    lscaled_pub = rospy.Publisher("lwheel_scaled", Int16, queue_size=10)
+    rscaled_pub = rospy.Publisher("rwheel_scaled", Int16, queue_size=10) 
     
     ### testing sleep CPU usage
     r = rospy.Rate(50) 
@@ -53,3 +45,17 @@ if __name__ == '__main__':
         r.sleep()
         
     rospy.spin()
+
+def lwheelCallback(msg):
+    lscaled_pub.publish( msg.data * -1 * scale)
+
+def rwheelCallback(msg):
+    rscaled_pub.publish( msg.data * -1 * scale)
+
+
+if __name__ == '__main__':
+    """main"""
+    try:
+        scaleWheel()
+    except rospy.ROSInterruptException:
+        pass

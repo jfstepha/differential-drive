@@ -39,8 +39,8 @@ class TwistToMotors():
     
         self.w = rospy.get_param("~base_width", 0.2)
     
-        self.pub_lmotor = rospy.Publisher('lwheel_vtarget', Float32)
-        self.pub_rmotor = rospy.Publisher('rwheel_vtarget', Float32)
+        self.pub_lmotor = rospy.Publisher('lwheel_vtarget', Float32, queue_size=10)
+        self.pub_rmotor = rospy.Publisher('rwheel_vtarget', Float32, queue_size=10)
         rospy.Subscriber('twist', Twist, self.twistCallback)
     
     
@@ -95,5 +95,8 @@ class TwistToMotors():
 #############################################################
 if __name__ == '__main__':
     """ main """
-    twistToMotors = TwistToMotors()
-    twistToMotors.spin()
+    try:
+        twistToMotors = TwistToMotors()
+        twistToMotors.spin()
+    except rospy.ROSInterruptException:
+        pass

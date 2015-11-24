@@ -39,7 +39,7 @@ class MainWindow(QtGui.QMainWindow):
     #####################################################################    
         super(MainWindow, self).__init__()
         self.timer_rate = rospy.get_param('~publish_rate', 50)
-        self.pub_twist = rospy.Publisher('twist', Twist)
+        self.pub_twist = rospy.Publisher('twist', Twist, queue_size=10)
         
         self.initUI()
         
