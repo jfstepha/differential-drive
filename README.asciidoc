@@ -26,7 +26,7 @@ http://wiki.ros.org/differential_drive.
 
 == License
 
-The original code archive does not specify a license. Please contact
-Jon Stephan for usage information. Clone the repository and examine the
-git log to get his email address.
+The code is licensed under the terms of the Gnu General Public
+License, Version 3. See the file `LICENSE` for details.
+
 
