@@ -49,7 +49,7 @@ class WheelLoopback():
         
         rospy.Subscriber('motor', Int16, self.motor_callback)
         
-        self.pub_wheel = rospy.Publisher('wheel', Int16)
+        self.pub_wheel = rospy.Publisher('wheel', Int16, queue_size=10)
         
     ###############################################
     def spin(self):
@@ -110,5 +110,8 @@ class WheelLoopback():
 ################################################
 if __name__ == '__main__':
     """ main """
-    wheelLoopback = WheelLoopback()
-    wheelLoopback.spin()
+    try:
+        wheelLoopback = WheelLoopback()
+        wheelLoopback.spin()
+    except rospy.ROSInterruptException:
+        pass
