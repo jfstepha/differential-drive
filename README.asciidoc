@@ -1,0 +1,12 @@
+= differential-drive
+
+This is a fork of the `differential_drive` ROS package, originally
+written by Jon Stephan. That package was last updated for ROS
+Groovy. While it still works on later versions of ROS, it generates
+warnings. This repository will update it for ROS Jade Turtle.
+
+ROS package page::
+http://wiki.ros.org/differential_drive
+
+Original code repository::
+https://code.google.com/p/differential-drive/
